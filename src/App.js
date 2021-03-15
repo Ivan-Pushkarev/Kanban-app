@@ -31,7 +31,6 @@ const currentStatus = [
 
  ];
 
-function App() {
 
 const tasks = [
   {
@@ -62,6 +61,7 @@ const tasks = [
   },
 ];
 
+function App() {
 
   const [list, setList] = useState(tasks);
   const backlogList = list.filter(el => el.status === 1);
@@ -70,6 +70,20 @@ const tasks = [
   const reviewList = list.filter(el => el.status === 4);
   const doneList = list.filter(el => el.status === 5);
   
+  const [inputValue, setInputValue] = useState('Add task');
+  const onChange = e => {
+   
+    setInputValue(e.target.value);
+  };
+  const addToList = () => {
+    setList([...list,
+      {
+        id: Math.random(),
+        name: inputValue,
+        status: 0,
+      }]);
+    setInputValue('')
+  };
   
   const changeStatus = (id) => {
     const newList = list.map(el => el.id === id ? ({...el, markedForStatusChange: true}) : ({...el, markedForStatusChange: false}));
@@ -93,11 +107,13 @@ const tasks = [
   
   
   return <div>
+    <h2><center className ="p-3 mb-2 bg-secondary text-white"> Kanban App</center></h2>
     <div className="container">
       <div className="row align-items-start">
-        <div className="col">
-         <h2> My Tasks </h2>
-          <hr/>
+        <div className="col" class="col-sm-3 bg-light p-3 border">
+         <h4> My Tasks </h4>
+          <input type="text" onChange={onChange} value={inputValue} />
+          <button type="button" className="btn btn-secondary" onClick={addToList}>Add to list</button>
           <div>
             <ol>
               {  list.map(el =>
