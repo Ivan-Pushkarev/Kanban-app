@@ -43,12 +43,12 @@ const tasks = [
   {
     id: 2,
     name: 'Learn React',
-    status: 3
+    status: 0
   },
   {
     id: 3,
     name: 'Finish Todo list',
-    status: 2
+    status: 0
   },
   {
     id: 4,
@@ -58,12 +58,13 @@ const tasks = [
   {
     id: 5,
     name: 'Find a job',
-    status: 5
+    status: 0
   },
 ];
 
 
   const [list, setList] = useState(tasks);
+  const backlogList = list.filter(el => el.status === 1);
   const todoList = list.filter(el => el.status === 2);
   const progressList = list.filter(el => el.status === 3);
   const reviewList = list.filter(el => el.status === 4);
@@ -75,13 +76,16 @@ const tasks = [
     setList(newList )
   }
   const leftButtonPushed = (id) => {
-    const newList = list.map(el => el.id === id ? ({...el, markedFoDeletion: false}) : el);
+    console.log(id);
+    const newList = list.map(el => el.id === id ? ({...el, status: (el.status - 1)}) : el);
     setList(newList );
-    const updatedList= list.filter(el => el.id !== id);
-    setList(updatedList);
+   
   
   }
-  const rightButtonPushed = () => {
+  const rightButtonPushed = (id) => {
+    const newList = list.map(el => el.id === id ? ({...el, status: (el.status + 1)}) : el);
+    setList(newList );
+  
   
   }
   
@@ -97,7 +101,7 @@ const tasks = [
           <div>
             <ol>
               {  list.map(el =>
-              <li key={el.id} ><h4> {el.name}</h4>
+              <li key={el.id} ><h5> {el.name}</h5>
                 <div>Status: {currentStatus[el.status].statusName} </div>
                  <div>
                     <button onClick={() => changeStatus(el.id)}>Change status</button>
@@ -109,7 +113,7 @@ const tasks = [
         </div>
                  </div>
         <div className="col">
-          <h2> todo ⇒ </h2>
+          <h3> todo ⇒ </h3>
           <hr/>
           <div>
             {
@@ -118,7 +122,7 @@ const tasks = [
           </div>
         </div>
         <div className="col">
-          <h2> progress ⇒ </h2>
+          <h3> progress ⇒ </h3>
           <hr/>
           <div>
             {
@@ -127,7 +131,7 @@ const tasks = [
           </div>
         </div>
         <div className="col">
-          <h2> review ⇒ </h2>
+          <h3> review ⇒ </h3>
           <hr/>
           <div>
             {
@@ -136,7 +140,7 @@ const tasks = [
           </div>
         </div>
         <div className="col">
-          <h2> done </h2>
+          <h3> done </h3>
           <hr/>
           <div>
             {
@@ -146,6 +150,11 @@ const tasks = [
         </div>
       </div>
       </div>
+    <center><h3> backlogs :</h3>
+      {
+        backlogList.map(el => <div key={el.id}>{el.name}</div>)
+      }
+    </center>
       </div>
   
 }
