@@ -64,6 +64,7 @@ const tasks = [
 function App() {
 
   const [list, setList] = useState(tasks);
+  const tasksList = list.filter(el => el.status === 0);
   const backlogList = list.filter(el => el.status === 1);
   const todoList = list.filter(el => el.status === 2);
   const progressList = list.filter(el => el.status === 3);
@@ -85,10 +86,6 @@ function App() {
     setInputValue('')
   };
   
-  const changeStatus = (id) => {
-    const newList = list.map(el => el.id === id ? ({...el, markedForStatusChange: true}) : ({...el, markedForStatusChange: false}));
-    setList(newList )
-  }
   const leftButtonPushed = (id) => {
     console.log(id);
     const newList = list.map(el => el.id === id ? ({...el, status: (el.status - 1)}) : el);
@@ -108,50 +105,52 @@ function App() {
   
   return <div>
     <h2><center className ="p-3 mb-2 bg-secondary text-white"> Kanban App</center></h2>
-    <div className="container">
-      <div className="row align-items-start">
-        <div className="col" class="col-sm-3 bg-light p-3 border">
+    <div className="container-fluid">
+      <div className="row justify-content-around">
+        <div className="col-auto" class="col-sm-3 bg-light p-3 border">
          <h4> My Tasks </h4>
           <input type="text" onChange={onChange} value={inputValue} />
           <button type="button" className="btn btn-secondary" onClick={addToList}>Add to list</button>
           <div>
             <ol>
-              {  list.map(el =>
-              <li key={el.id} ><h5> {el.name}</h5>
-                <div>Status: {currentStatus[el.status].statusName} </div>
-                 <div>
-                    <button onClick={() => changeStatus(el.id)}>Change status</button>
-                 </div>
-                <ChangeStatus markedForStatusChange={el.markedForStatusChange} id={el.id} status={el.status} currentStatus={currentStatus}
-                              leftButtonPushed={leftButtonPushed}  rightButtonPushed={rightButtonPushed} />
-          </li>)}
+              {  tasksList.map(el =>
+              <li key={el.id} ><button type="button" className="btn btn-outline-secondary" onClick={() => rightButtonPushed(el.id)}> {el.name}</button></li>)}
             </ol>
+          </div>
         </div>
-                 </div>
         <div className="col">
           <h3> todo ⇒ </h3>
           <hr/>
           <div>
             {
-            todoList.map(el => <div key={el.id}>{el.name}</div>)
+            todoList.map(el => <div key={el.id}>
+            <ChangeStatus id={el.id} status={el.status} name={el.name} currentStatus={currentStatus}
+                          leftButtonPushed={leftButtonPushed}  rightButtonPushed={rightButtonPushed}/>
+            </div>)
             }
           </div>
         </div>
         <div className="col">
           <h3> progress ⇒ </h3>
           <hr/>
-          <div>
-            {
-              progressList.map(el => <div key={el.id}>{el.name}</div>)
-            }
-          </div>
+            <div>
+              {
+                progressList.map(el => <div key={el.id}>
+                  <ChangeStatus id={el.id} status={el.status} name={el.name} currentStatus={currentStatus}
+                                leftButtonPushed={leftButtonPushed}  rightButtonPushed={rightButtonPushed}/>
+                </div>)
+              }
+            </div>
         </div>
         <div className="col">
           <h3> review ⇒ </h3>
           <hr/>
           <div>
             {
-              reviewList.map(el => <div key={el.id}>{el.name}</div>)
+              reviewList.map(el => <div key={el.id}>
+                <ChangeStatus id={el.id} status={el.status} name={el.name} currentStatus={currentStatus}
+                              leftButtonPushed={leftButtonPushed}  rightButtonPushed={rightButtonPushed}/>
+              </div>)
             }
           </div>
         </div>
@@ -166,9 +165,9 @@ function App() {
         </div>
       </div>
       </div>
-    <center><h3> backlogs :</h3>
+    <center><h3>backlogs: </h3>
       {
-        backlogList.map(el => <div key={el.id}>{el.name}</div>)
+        backlogList.map(el => <div><button type="button" class="btn btn-outline-secondary"  key={el.id} onClick={() => rightButtonPushed(el.id)} >{el.name}</button></div>)
       }
     </center>
       </div>
